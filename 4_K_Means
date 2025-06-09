@@ -1,0 +1,53 @@
+import numpy as np
+
+# Load data
+pixels = np.loadtxt('HW1_data/4/kmeans-image.txt')
+
+initial_centroids = np.array([
+    [255, 255, 255],
+    [255, 0, 0],
+    [128, 0, 0],
+    [0, 255, 0],
+    [0, 128, 0],
+    [0, 0, 255],
+    [0, 0, 128],
+    [0, 0, 0]
+])
+
+def kmeans(X, K, init_centroids, max_iters=100):
+    centroids = init_centroids.copy()
+    for iteration in range(max_iters):
+        # Step 1: Assign each pixel to the nearest centroid
+        dists = np.sum((X[:, np.newaxis, :] - centroids[np.newaxis, :, :]) ** 2, axis=2)
+        labels = np.argmin(dists, axis=1)
+        
+        # Step 2: Recompute centroids
+        new_centroids = np.array([
+            X[labels == k].mean(axis=0) if np.any(labels == k) else centroids[k]
+            for k in range(K)
+        ])
+
+        # Compute clustering error (sum of squared distances)
+        error = np.sum((X - centroids[labels]) ** 2)
+        print(f"Iteration {iteration + 1}, Error: {error}")
+        
+        if np.allclose(centroids, new_centroids):
+            break
+        centroids = new_centroids
+
+    return centroids, labels
+
+centroids, labels = kmeans(pixels, 8, initial_centroids)
+
+import matplotlib.pyplot as plt
+
+# Replace each pixel with its centroid
+segmented_pixels = centroids[labels].astype(np.uint8)
+
+# Reshape back to image dimensions (516 rows × 407 cols × 3 channels)
+segmented_image = segmented_pixels.reshape(516, 407, 3)
+
+plt.imshow(segmented_image)
+plt.title("Segmented Image with K=8")
+plt.axis('off')
+plt.show()

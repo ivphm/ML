@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+### Part a) ###
+
+# Load comma-delimited data
+X_all = np.loadtxt("HW1_data/3/hw1_ridge_x.dat", delimiter=",")
+Y_all = np.loadtxt("HW1_data/3/hw1_ridge_y.dat", delimiter=",")
+
+# Split into validation and training
+vX, tX = X_all[:10], X_all[10:]
+vY, tY = Y_all[:10], Y_all[10:]
+
+# Ridge regression
+def ridge_regression(X, Y, lam):
+    n, d = X.shape
+    I = np.eye(d)
+    return np.linalg.inv(n * lam * I + X.T @ X) @ X.T @ Y
+
+theta = ridge_regression(tX, tY, 0.15)
+print("Theta for λ = 0.15:\n", theta)
+
+### Part b) ###
+tn = tX.shape[0]  # training size
+vn = vX.shape[0]  # validation size
+
+tloss = []
+vloss = []
+
+index = -np.arange(0, 5.1, 0.1)  # i from 0 to 5 → lambda = 10^-5 to 10^0
+
+def empirical_risk(X, Y, theta):
+    return np.sum((X @ theta - Y) ** 2) / (len(Y) * 2)
+
+for i in index:
+    lam = 10 ** i
+    w = ridge_regression(tX, tY, lam)
+    tloss.append(empirical_risk(tX, tY, w))
+    vloss.append(empirical_risk(vX, vY, w))
+
+best_i = index[np.argmin(vloss)]
+best_lambda = 10 ** best_i
+print("Lambda that minimizes validation loss:", best_lambda)
+
+# Plot log-loss vs log10(lambda)
+plt.plot(index, np.log(tloss), 'r', label="Training Loss")
+plt.plot(index, np.log(vloss), 'b', label="Validation Loss")
+plt.xlabel("log10(lambda)")
+plt.ylabel("log(empirical risk)")
+plt.title("Ridge Regression Loss vs Lambda")
+plt.legend()
+plt.grid(True)
+plt.show()

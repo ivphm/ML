@@ -1,0 +1,40 @@
+import pandas as pd
+import numpy as np
+
+# Training data
+train_df = pd.read_csv("HW1_data/1/train_1_5.csv", header=None)
+X_train = train_df.iloc[:, :2].values
+y_train = np.where(train_df.iloc[:, 2].values == 1, -1, 1)
+
+# Random initialization
+theta = np.random.randn(2) * 0.01
+theta_0 = np.random.randn() * 0.01
+
+epochs = 5 # set to 1 or 5
+
+# Train until 0 mistakes in an epoch
+for epoch in range(epochs):
+    m = 0  # Number of misclassifications in this epoch
+    for x, y in zip(X_train, y_train):
+        if y * (np.dot(theta, x) + theta_0) <= 0:
+            theta += y * x
+            theta_0 += y
+            m += 1
+    print(f"Epoch {epoch+1}: {m} misclassifications")
+    if m == 0:
+        print("Training converged early")
+        break  # No mistakes, algorithm has converged
+
+# Test data
+test_df = pd.read_csv("HW1_data/1/test_1_5.csv", header=None)
+X_test = test_df.iloc[:, :2].values
+y_test = np.where(test_df.iloc[:, 2].values == 1, -1, 1)
+
+# Predict and evaluate
+preds = np.sign(np.dot(X_test, theta) + theta_0)
+accuracy = np.mean(preds == y_test)
+
+# Output
+print("Theta:", theta)
+print("Offset:", theta_0)
+print("Accuracy:", accuracy)
