@@ -7,16 +7,16 @@ X_train = train_df.iloc[:, :2].values
 y_train = np.where(train_df.iloc[:, 2].values == 1, -1, 1)
 
 # Random initialization
-theta = np.random.randn(2) * 0.01
-theta_0 = np.random.randn() * 0.01
+theta = np.random.randn(2) * 0.01 # weights
+theta_0 = np.random.randn() * 0.01 # offset
 
-epochs = 5 # set to 1 or 5
+epochs = 1 # set to 1 or 5
 
 # Train until 0 mistakes in an epoch
 for epoch in range(epochs):
     m = 0  # Number of misclassifications in this epoch
     for x, y in zip(X_train, y_train):
-        if y * (np.dot(theta, x) + theta_0) <= 0:
+        if y * (np.dot(theta, x) + theta_0) <= 0: # Update rule
             theta += y * x
             theta_0 += y
             m += 1
