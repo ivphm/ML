@@ -7,8 +7,8 @@ X_train = train_df.iloc[:, :2].values
 y_train = np.where(train_df.iloc[:, 2].values == 1, -1, 1)
 
 # Random initialization
-theta = np.random.randn(2) * 0.01 # weights
-theta_0 = np.random.randn() * 0.01 # offset
+theta = np.random.randn(2) * 0.01 # Weight vector
+theta_0 = np.random.randn() * 0.01 # Offset
 
 epochs = 1 # set to 1 or 5
 

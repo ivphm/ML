@@ -64,7 +64,7 @@ print("Training error (SGD):", empirical_risk(X, y, theta_sgd))
 
 # Polynomial Regression
 def PolyRegress(x, y, d):
-    X_poly = np.column_stack([x**i for i in range(d + 1)])
+    X_poly = np.column_stack([x**i for i in range(d + 1)]) # Expand input features to powers
     theta = closed_form(X_poly, y)
     error = empirical_risk(X_poly, y, theta)
     return theta, error, X_poly
