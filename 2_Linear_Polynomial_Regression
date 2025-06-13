@@ -85,7 +85,7 @@ for d in range(3, 16):
     print(f"Degree {d} error: {err}")
 
 # Overfitting Point
-plt.plot(range(3, 15), errors, marker='o')
+plt.plot(range(3, 16), errors, marker='o')
 plt.xlabel("Polynomial Degree")
 plt.ylabel("Training Error")
 plt.title("Training Error vs Polynomial Degree")
